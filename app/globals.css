@@ -36,3 +36,73 @@ body{background:#f5f1ff}
 .footer{background:linear-gradient(90deg,#0d0d16,#171026);color:#a59bb8}
 
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+
+/* Precision typography + red/yellow accent pass */
+:root{--red:#ff2d2d;--yellow:#ffd400}
+body{font-family:var(--font-ui),Arial,sans-serif}
+.heroCopy h1,.sectionHead h2,.stage h3,.heroIndex{font-family:var(--font-display),var(--font-ui),sans-serif}
+.nav,.eyebrow,.heroMetaRow,.heroTicker,.studioTitle,.panelLabel,.formats,.footer{font-family:var(--font-ui),sans-serif}
+
+.heroCopy h1{letter-spacing:-.065em;line-height:.79}
+.heroCopy h1 .hotWord{
+  font-family:var(--font-display),sans-serif;
+  font-style:normal;
+  color:transparent;
+  background:linear-gradient(90deg,var(--red),#ff6a1f,var(--yellow),var(--red));
+  background-size:260% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  animation:hotSweep 4.2s linear infinite;
+  filter:drop-shadow(0 12px 28px rgba(255,45,45,.12))
+}
+@keyframes hotSweep{to{background-position:260% 0}}
+
+.heroMetaRow{display:flex;gap:14px;align-items:center;margin-top:21px;margin-bottom:-16px;font-size:8px;letter-spacing:.14em;font-weight:700}
+.heroMetaRow>span{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid rgba(20,18,24,.12);border-radius:999px;background:rgba(255,255,255,.42);backdrop-filter:blur(9px)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.redDot{background:var(--red);box-shadow:0 0 0 4px rgba(255,45,45,.12);animation:redBlink 1.8s ease-in-out infinite}
+.yellowDot{background:var(--yellow);box-shadow:0 0 0 4px rgba(255,212,0,.14)}
+@keyframes redBlink{50%{opacity:.45;transform:scale(.72)}}
+
+.orbOne{background:rgba(255,45,45,.24)}
+.orbThree{background:rgba(255,212,0,.28)}
+.orbFour{width:150px;height:150px;background:rgba(255,212,0,.2);right:42%;top:28%;animation-delay:-5.5s}
+
+.chroma{filter:saturate(1.12)}
+.heroCopy h1 .chroma{background-image:linear-gradient(90deg,var(--red),var(--yellow),var(--pink),var(--violet),var(--cyan),var(--red))}
+.heroTicker{background:linear-gradient(90deg,var(--red),var(--yellow),var(--pink),var(--violet));font-weight:700}
+.heroTicker span{animation-duration:15s}
+
+.primary{background:linear-gradient(135deg,#11111c 5%,#4b1422 55%,#2b183f 100%)}
+.primary span{background:linear-gradient(135deg,var(--yellow),var(--red));color:#111}
+.primary:hover{box-shadow:0 18px 44px rgba(255,45,45,.26)}
+
+.sectionHead h2{letter-spacing:-.055em}
+.sectionHead h2 i{background-image:linear-gradient(90deg,var(--red),var(--yellow),var(--pink),var(--cyan))}
+.stage0:after{background:var(--red)}.stage3:after{background:var(--yellow)}
+.g0 div{border-color:var(--red);background:repeating-linear-gradient(45deg,var(--red) 0 3px,transparent 3px 9px);box-shadow:0 0 36px rgba(255,45,45,.28)}
+.g3 div{background:linear-gradient(135deg,var(--yellow),#ff8a18,var(--red));box-shadow:0 0 48px rgba(255,212,0,.24)}
+.stage h3{letter-spacing:-.035em}
+
+.studioWrap{background-image:linear-gradient(120deg,#ff3131 0%,#ffd400 24%,#ff70c7 47%,#8b67ff 70%,#59e6ff 100%)}
+.ready{box-shadow:0 8px 24px rgba(255,45,45,.09)}
+.plus{color:var(--yellow);text-shadow:0 0 22px rgba(255,212,0,.35)}
+.enhance{background:linear-gradient(90deg,rgba(255,45,45,.3),rgba(124,60,255,.32))}
+.status b,.axis{color:var(--yellow)}
+.control em{color:#ff6a5e}
+.control input{accent-color:var(--yellow)}
+.formats .active{background:linear-gradient(135deg,var(--red),#ff7847,var(--yellow));color:#171217}
+.export{background:linear-gradient(90deg,var(--yellow),#ff8a3d,var(--red));color:#171217}
+.export:hover{box-shadow:0 12px 30px rgba(255,45,45,.2)}
+
+.nav nav a{position:relative;transition:color .2s}
+.nav nav a:after{content:"";position:absolute;left:0;right:100%;bottom:-7px;height:2px;background:linear-gradient(90deg,var(--red),var(--yellow));transition:right .25s ease}
+.nav nav a:hover{color:#1c1420}.nav nav a:hover:after{right:0}
+.brand svg{color:var(--red)}
+.navCta{background:linear-gradient(135deg,var(--red),#ff6a2f,var(--yellow));color:#171217}
+.navCta:hover{box-shadow:0 12px 35px rgba(255,45,45,.24)}
+
+@media(max-width:900px){
+  .heroMetaRow{margin-top:16px;flex-wrap:wrap}
+}
