@@ -12,9 +12,9 @@ Pixel Forge uses:
 - **Pixel Forge local geometry engine** for deterministic relief/lithophane STL and GLB output.
 - **three.ws** for optional full image-to-3D reconstruction.
 - **No OpenAI dependency.**
-- **No Cloudinary API or Cloudinary SDK dependency.**
+- **Cloudinary Upload Widget + delivery URLs** for the browser media layer, with no server-side Cloudinary API secret or SDK dependency.
 
-The HackIndia Cloudinary repository is the project/submission repository. The application itself does not require Cloudinary credentials.
+The HackIndia Cloudinary repository is the project/submission repository. The frontend uses Cloudinary's unsigned Upload Widget. Configure the public cloud name and unsigned upload preset in the frontend environment; the backend never stores a Cloudinary API secret.
 
 ```text
 Frontend
@@ -132,7 +132,7 @@ curl -X POST http://localhost:8000/api/v1/ai3d/generate \
   -F "tier=draft"
 ```
 
-Pixel Forge stores the uploaded reference temporarily under its own public `/files/sources/` route, so the reconstruction provider can fetch it. No Cloudinary upload API is involved.
+When the frontend uses Cloudinary, its `res.cloudinary.com` delivery URL is passed directly to the backend and then into the 3D pipeline. Raw-file fallback uploads can still be served temporarily from Pixel Forge's own `/files/sources/` route.
 
 ## Local conversion engine
 
