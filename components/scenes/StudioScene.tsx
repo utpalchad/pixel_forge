@@ -14,20 +14,21 @@ function Model({depth,wire}:{depth:number,wire:boolean}){
   });
   return <mesh ref={m} scale={[1,1,.65+depth/140]} rotation={[-.25,.3,0]}>
     <icosahedronGeometry args={[1.5,5]}/>
-    <meshPhysicalMaterial color={wire?"#5ff7ff":"#8a4dff"} roughness={.26} metalness={.12} clearcoat={1} wireframe={wire}/>
+    <meshPhysicalMaterial color={wire?"#ffd400":"#8a4dff"} roughness={.23} metalness={.14} clearcoat={1} wireframe={wire}/>
   </mesh>
 }
 
 export default function StudioScene({depth,wire}:{depth:number,wire:boolean}){
   return <Canvas camera={{position:[0,1,5],fov:42}} dpr={[1,1.5]}>
     <color attach="background" args={["#0d0d16"]}/>
-    <ambientLight intensity={1.0}/>
-    <directionalLight position={[4,5,3]} intensity={2.2} color="#ffffff"/>
-    <pointLight position={[-3,2,2]} intensity={26} distance={8} color="#ff4fd8"/>
+    <ambientLight intensity={.9}/>
+    <directionalLight position={[4,5,3]} intensity={2.15} color="#ffffff"/>
+    <pointLight position={[-3,2,2]} intensity={26} distance={8} color="#ff2d2d"/>
     <pointLight position={[3,0,2]} intensity={24} distance={8} color="#57e6ff"/>
-    <pointLight position={[0,-1,3]} intensity={18} distance={7} color="#ff8a3d"/>
+    <pointLight position={[0,-1,3]} intensity={20} distance={7} color="#ffd400"/>
+    <pointLight position={[0,3,-2]} intensity={14} distance={6} color="#ff4fd8"/>
     <Model depth={depth} wire={wire}/>
-    <Grid position={[0,-1.9,0]} args={[10,10]} cellSize={.4} cellThickness={.4} cellColor="#31264a" sectionColor="#5ff7ff" fadeDistance={8}/>
+    <Grid position={[0,-1.9,0]} args={[10,10]} cellSize={.4} cellThickness={.4} cellColor="#36253f" sectionColor="#ffd400" fadeDistance={8}/>
     <OrbitControls enablePan={false} minDistance={3} maxDistance={8}/>
   </Canvas>
 }
