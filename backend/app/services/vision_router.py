@@ -3,18 +3,15 @@ from __future__ import annotations
 from app.config import Settings
 from app.models.schemas import ImageAnalysis, VisionProvider
 from app.services.vision_gemini import GeminiVisionService
-from app.services.vision_openai import OpenAIVisionService
 
 
 class VisionRouter:
     def __init__(self, settings: Settings):
         self.settings = settings
-        self.openai = OpenAIVisionService(settings)
         self.gemini = GeminiVisionService(settings)
 
     def available(self) -> dict[str, bool]:
         return {
-            "openai": self.openai.enabled,
             "gemini": self.gemini.enabled,
             "local": True,
         }
@@ -27,11 +24,6 @@ class VisionRouter:
         provider: VisionProvider = VisionProvider.auto,
         user_description: str = "",
     ) -> tuple[str, ImageAnalysis]:
-        if provider == VisionProvider.openai:
-            return "openai", await self.openai.analyze(
-                image_bytes, mime_type, user_description=user_description
-            )
-
         if provider == VisionProvider.gemini:
             return "gemini", await self.gemini.analyze(
                 image_bytes, mime_type, user_description=user_description
@@ -40,19 +32,14 @@ class VisionRouter:
         if provider == VisionProvider.local:
             return "local", self._local_fallback(user_description)
 
-        if self.openai.enabled:
+        if self.gemini.enabled:
             try:
-                return "openai", await self.openai.analyze(
+                return "gemini", await self.gemini.analyze(
                     image_bytes, mime_type, user_description=user_description
                 )
             except Exception:
-                if not self.gemini.enabled:
-                    raise
-
-        if self.gemini.enabled:
-            return "gemini", await self.gemini.analyze(
-                image_bytes, mime_type, user_description=user_description
-            )
+                # Keep the app usable during quota/network/provider errors.
+                return "local", self._local_fallback(user_description)
 
         return "local", self._local_fallback(user_description)
 
