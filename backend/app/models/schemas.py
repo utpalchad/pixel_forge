@@ -16,7 +16,6 @@ class OutputFormat(str, Enum):
 
 class VisionProvider(str, Enum):
     auto = "auto"
-    openai = "openai"
     gemini = "gemini"
     local = "local"
 
