@@ -106,3 +106,27 @@ body{font-family:var(--font-ui),Arial,sans-serif}
 @media(max-width:900px){
   .heroMetaRow{margin-top:16px;flex-wrap:wrap}
 }
+
+
+/* Full-stack Studio states */
+button:disabled{cursor:not-allowed;opacity:.58}
+.spin{animation:pfSpin .9s linear infinite}
+@keyframes pfSpin{to{transform:rotate(360deg)}}
+.status b.error{color:#ff5d5d}
+.resultLink{
+  display:block;
+  margin-top:11px;
+  padding:10px 12px;
+  border:1px solid rgba(255,212,0,.28);
+  color:var(--yellow);
+  font-size:8px;
+  letter-spacing:.11em;
+  text-align:center;
+  background:rgba(255,212,0,.04);
+  transition:background .2s,border-color .2s,transform .2s
+}
+.resultLink:hover{
+  background:rgba(255,212,0,.1);
+  border-color:rgba(255,212,0,.55);
+  transform:translateY(-1px)
+}
