@@ -1,14 +1,11 @@
-import asyncio
-
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from app.config import get_settings
 from app.models.schemas import JobResponse, VisionProvider
-from app.services.cloudinary_service import CloudinaryService
 from app.services.jobs import job_store
 from app.services.threews import ThreeWSService
 from app.services.vision_router import VisionRouter
-from app.utils.files import read_validated_image
+from app.utils.files import read_validated_image, save_public_source_image
 
 router = APIRouter(prefix="/ai3d", tags=["ai-3d"])
 
@@ -32,13 +29,12 @@ async def generate_ai_3d(
             detail="tier must be draft, standard, or high.",
         )
 
-    cloudinary_service = CloudinaryService(settings)
-    if not cloudinary_service.enabled:
+    if settings.public_base_url.startswith(("http://localhost", "http://127.0.0.1")):
         raise HTTPException(
             status_code=503,
             detail=(
-                "Cloudinary is required for AI 3D generation because the external "
-                "reconstruction service needs public reference-image URLs."
+                "AI 3D generation needs PUBLIC_BASE_URL to be a public deployment URL "
+                "so the external 3D engine can fetch reference images."
             ),
         )
 
@@ -59,9 +55,7 @@ async def generate_ai_3d(
             )
             generation_prompt = analysis.generation_prompt
             if analysis.negative_prompt:
-                generation_prompt += (
-                    "\nAvoid: " + analysis.negative_prompt
-                )
+                generation_prompt += "\nAvoid: " + analysis.negative_prompt
         except Exception as exc:
             if not generation_prompt:
                 raise HTTPException(
@@ -70,12 +64,10 @@ async def generate_ai_3d(
                 ) from exc
 
     try:
-        source_urls = await asyncio.gather(
-            *[
-                cloudinary_service.upload_image(data, filename_hint=filename.rsplit(".", 1)[0])
-                for data, _, filename in validated
-            ]
-        )
+        source_urls = [
+            save_public_source_image(data, mime, settings)
+            for data, mime, _ in validated
+        ]
         threews = ThreeWSService(settings)
         submitted = await threews.submit(
             source_urls,
