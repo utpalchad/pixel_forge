@@ -11,7 +11,7 @@ from app.models.schemas import ImageAnalysis
 SYSTEM_PROMPT = """You are Pixel Forge's 3D reconstruction analyst.
 Inspect the reference image and produce precise geometry-oriented information for an image-to-3D system.
 Focus on shape, proportions, orientation, materials, visible features, likely symmetry, and genuinely unknown/occluded geometry.
-Do not invent hidden details as facts. Put uncertain/hidden areas in unknown_geometry.
+Do not invent hidden details as facts. Put uncertain or hidden areas in unknown_geometry.
 The generation_prompt should tell a 3D model generator what to preserve and how to complete unseen surfaces coherently.
 The negative_prompt should discourage duplicated parts, broken topology, floating geometry, distorted proportions, text, and artifacts.
 """
@@ -47,7 +47,7 @@ class OpenAIVisionService:
                 f"not guaranteed visual truth:\n{user_description.strip()}"
             )
 
-        response = await client.responses.create(
+        response = await client.responses.parse(
             model=self.settings.openai_model,
             input=[
                 {
@@ -58,17 +58,10 @@ class OpenAIVisionService:
                     ],
                 }
             ],
-            text={
-                "format": {
-                    "type": "json_schema",
-                    "name": "pixel_forge_image_analysis",
-                    "strict": True,
-                    "schema": ImageAnalysis.model_json_schema(),
-                }
-            },
+            text_format=ImageAnalysis,
         )
 
-        if not response.output_text:
-            raise RuntimeError("OpenAI returned an empty analysis.")
+        if response.output_parsed is None:
+            raise RuntimeError("OpenAI returned no structured image analysis.")
 
-        return ImageAnalysis.model_validate_json(response.output_text)
+        return response.output_parsed
