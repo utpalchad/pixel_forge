@@ -17,11 +17,6 @@ async def providers():
     return ProvidersResponse(
         vision=[
             ProviderStatus(
-                name="openai",
-                configured=bool(settings.openai_api_key),
-                note=f"model: {settings.openai_model}",
-            ),
-            ProviderStatus(
                 name="gemini",
                 configured=bool(settings.gemini_api_key),
                 note=f"model: {settings.gemini_model}",
@@ -35,10 +30,10 @@ async def providers():
         image_to_3d=[
             ProviderStatus(
                 name="three.ws",
-                configured=settings.cloudinary_enabled,
+                configured=True,
                 note=(
-                    "Free-lane provider. Cloudinary is required here to expose "
-                    "uploaded reference images as public URLs."
+                    "Reference images are served directly by Pixel Forge as public URLs; "
+                    "no Cloudinary API is used."
                 ),
             ),
             ProviderStatus(
