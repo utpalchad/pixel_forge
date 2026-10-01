@@ -29,12 +29,17 @@ async def providers():
         ],
         image_to_3d=[
             ProviderStatus(
-                name="three.ws",
+                name="cloudinary",
                 configured=True,
                 note=(
-                    "Reference images are served directly by Pixel Forge as public URLs; "
-                    "no Cloudinary API is used."
+                    "Pixel Forge accepts Cloudinary delivery URLs from the browser Upload Widget. "
+                    "No Cloudinary API secret is stored on the backend."
                 ),
+            ),
+            ProviderStatus(
+                name="three.ws",
+                configured=True,
+                note="Optional full image-to-3D reconstruction provider.",
             ),
             ProviderStatus(
                 name="pixel-forge-local",
