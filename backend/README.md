@@ -1,33 +1,37 @@
 # Pixel Forge Backend
 
-FastAPI backend for Pixel Forge.
+FastAPI backend for Pixel Forge, built for the AkashicX HackIndia submission repository:
 
-It supports two independent 3D paths:
-
-1. **Pixel Forge local engine** — deterministic JPG/PNG/WebP → relief/lithophane → STL/GLB.
-2. **AI 3D mode** — image analysis with OpenAI or Gemini → public reference images through Cloudinary → three.ws image-to-3D → textured GLB.
-
-The local engine does not require an AI API key.
+`HackIndiaXYZ/pixels-to-products-cloudinary-ai-hackathon-2026-akashicx`
 
 ## Architecture
+
+Pixel Forge uses:
+
+- **Gemini 3.1 Flash-Lite** for optional image understanding and structured 3D prompt generation.
+- **Pixel Forge local geometry engine** for deterministic relief/lithophane STL and GLB output.
+- **three.ws** for optional full image-to-3D reconstruction.
+- **No OpenAI dependency.**
+- **No Cloudinary API or Cloudinary SDK dependency.**
+
+The HackIndia Cloudinary repository is the project/submission repository. The application itself does not require Cloudinary credentials.
 
 ```text
 Frontend
    |
    +--> /api/v1/analysis/image
-   |       +--> OpenAI vision (preferred when configured)
-   |       +--> Gemini fallback
-   |       +--> local prompt fallback
+   |       +--> Gemini vision when GEMINI_API_KEY is configured
+   |       +--> local deterministic prompt fallback
    |
    +--> /api/v1/convert/local
    |       +--> grayscale / smoothing
    |       +--> physical height map
-   |       +--> closed mesh
-   |       +--> STL / GLB
+   |       +--> closed mesh generation
+   |       +--> STL / GLB / lithophane
    |
    +--> /api/v1/ai3d/generate
-           +--> vision prompt builder
-           +--> Cloudinary public image URLs
+           +--> Gemini geometry prompt
+           +--> Pixel Forge public source-image URL
            +--> three.ws reconstruction
            +--> /api/v1/jobs/{id}
 ```
@@ -39,11 +43,6 @@ Use Python 3.11+.
 ```bash
 cd backend
 python -m venv .venv
-```
-
-Activate the environment, then:
-
-```bash
 pip install -r requirements.txt
 cp .env.example .env
 uvicorn app.main:app --reload
@@ -55,50 +54,39 @@ Open:
 http://localhost:8000/docs
 ```
 
-## Environment variables
+## Environment
 
-The backend works with no external AI keys for relief/lithophane conversion.
+Local STL/GLB/lithophane generation works without an AI key.
 
-For AI features configure any of:
+To enable Gemini image analysis:
 
 ```env
-OPENAI_API_KEY=
-OPENAI_MODEL=gpt-5.6-luna
-
 GEMINI_API_KEY=
-GEMINI_MODEL=gemini-2.5-flash-lite
-
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
-Cloudinary is required for the current three.ws route because the reconstruction provider consumes public image URLs.
+For deployed AI 3D mode:
+
+```env
+PUBLIC_BASE_URL=https://YOUR-BACKEND.onrender.com
+THREEWS_BASE_URL=https://three.ws
+THREEWS_DEFAULT_TIER=draft
+```
 
 Never commit a populated `.env` file.
 
-## Endpoints
-
-### Health
+## Main endpoints
 
 ```http
-GET /health
-GET /providers
-```
-
-### Analyze an image
-
-```http
+GET  /health
+GET  /providers
 POST /api/v1/analysis/image
+POST /api/v1/convert/local
+POST /api/v1/ai3d/generate
+GET  /api/v1/jobs/{job_id}
 ```
 
-Multipart fields:
-
-- `file`
-- `provider`: `auto | openai | gemini | local`
-- `description`: optional user guidance
-
-Example:
+### Image analysis
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/analysis/image \
@@ -107,25 +95,9 @@ curl -X POST http://localhost:8000/api/v1/analysis/image \
   -F "description=running shoe"
 ```
 
-### Local image → STL/GLB
+With `provider=auto`, Gemini is used when configured. If the Gemini key is missing or the provider is temporarily unavailable, Pixel Forge falls back to its local prompt builder.
 
-```http
-POST /api/v1/convert/local
-```
-
-Useful fields:
-
-- `mode=relief|lithophane`
-- `output_format=stl|glb`
-- `width_mm=100`
-- `depth_mm=8`
-- `base_thickness_mm=1.5`
-- `max_thickness_mm=4`
-- `resolution=128`
-- `smoothing=15`
-- `invert=false`
-
-Example:
+### Local image to STL/GLB
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/convert/local \
@@ -137,94 +109,83 @@ curl -X POST http://localhost:8000/api/v1/convert/local \
   -F "resolution=128"
 ```
 
-The response includes a URL under `/files/...`.
+Modes:
 
-### Full AI image → 3D
+- `relief`
+- `lithophane`
 
-```http
-POST /api/v1/ai3d/generate
-```
+Formats:
 
-Upload 1–6 views.
+- `stl`
+- `glb`
+
+### AI image to 3D
+
+Upload 1 to 6 views:
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/ai3d/generate \
   -F "files=@front.jpg" \
   -F "files=@side.jpg" \
   -F "vision_provider=auto" \
-  -F "description=preserve the exact shoe proportions" \
+  -F "description=preserve the exact proportions" \
   -F "tier=draft"
 ```
 
-The response returns a Pixel Forge job ID. Poll:
+Pixel Forge stores the uploaded reference temporarily under its own public `/files/sources/` route, so the reconstruction provider can fetch it. No Cloudinary upload API is involved.
 
-```http
-GET /api/v1/jobs/{job_id}
+## Local conversion engine
+
+```text
+Image
+  ↓
+Resize + normalize
+  ↓
+Grayscale / height map
+  ↓
+Pixel intensity → physical height
+  ↓
+Generate vertices
+  ↓
+Connect triangle faces
+  ↓
+Add walls + base
+  ↓
+Validate closed mesh
+  ↓
+STL / GLB
 ```
 
-When complete, the response contains `glb_url` and `viewer_url`.
-
-## Vision behavior
-
-When `vision_provider=auto`:
-
-1. OpenAI is attempted if `OPENAI_API_KEY` exists.
-2. Gemini is used if OpenAI is unavailable/fails and Gemini is configured.
-3. A deterministic local prompt builder is used if neither provider is configured.
-
-The OpenAI implementation uses image input plus Pydantic-backed Structured Outputs so the downstream 3D provider receives predictable geometry-oriented fields instead of loose prose.
-
-## Local conversion limitations
-
-The local engine creates **2.5D** geometry. It is appropriate for:
-
-- lithophanes
-- embossed/engraved images
-- logos
-- reliefs
-- height-map-like objects
-
-It does not infer the unseen back side of a photographed real object. Use AI 3D mode for that.
+The local engine creates 2.5D geometry and is best suited to reliefs, lithophanes, logos, embossed art, and height-map-like objects.
 
 ## Tests
 
-From `backend/`:
-
 ```bash
+cd backend
 pytest -q
 ```
 
 ## Render
 
-Create a Python Web Service with:
-
-**Root directory**
-
-```text
-backend
-```
-
-**Build command**
+Build:
 
 ```bash
-pip install -r requirements.txt
+cd backend && pip install -r requirements.txt
 ```
 
-**Start command**
+Start:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
+cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
 Set:
 
 ```env
-PUBLIC_BASE_URL=https://YOUR-BACKEND.onrender.com
+PUBLIC_BASE_URL=https://pixel-forge-api.onrender.com
 CORS_ORIGINS=https://forge-pixel-forge.onrender.com
+GEMINI_API_KEY=YOUR_KEY
+GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
-Then add API keys as Render environment variables rather than putting them in GitHub.
-
-## Production notes
-
-The current job store is deliberately in-memory for hackathon speed. For production, replace it with Redis or Postgres. Generated local files are also stored on the service filesystem; use object storage for durable production downloads.
+Generated files currently use the Render service filesystem. For a longer-lived production deployment, move generated assets to persistent object storage.
