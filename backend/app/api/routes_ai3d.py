@@ -5,23 +5,46 @@ from app.models.schemas import JobResponse, VisionProvider
 from app.services.jobs import job_store
 from app.services.threews import ThreeWSService
 from app.services.vision_router import VisionRouter
-from app.utils.files import read_validated_image, save_public_source_image
+from app.utils.files import (
+    fetch_cloudinary_image,
+    read_validated_image,
+    save_public_source_image,
+)
 
 router = APIRouter(prefix="/ai3d", tags=["ai-3d"])
 
 
+def _parse_cloudinary_urls(raw: str) -> list[str]:
+    if not raw.strip():
+        return []
+    normalized = raw.replace("\n", ",")
+    return [part.strip() for part in normalized.split(",") if part.strip()]
+
+
 @router.post("/generate", response_model=JobResponse)
 async def generate_ai_3d(
-    files: list[UploadFile] = File(...),
+    files: list[UploadFile] | None = File(None),
+    cloudinary_urls: str = Form(""),
     vision_provider: VisionProvider = Form(VisionProvider.auto),
     description: str = Form(""),
     tier: str = Form("draft"),
     analyze_image: bool = Form(True),
 ):
     settings = get_settings()
+    uploads = files or []
+    cloudinary_refs = _parse_cloudinary_urls(cloudinary_urls)
 
-    if not 1 <= len(files) <= 6:
-        raise HTTPException(status_code=422, detail="Upload between 1 and 6 image views.")
+    if not uploads and not cloudinary_refs:
+        raise HTTPException(
+            status_code=422,
+            detail="Provide at least one uploaded image or Cloudinary delivery URL.",
+        )
+
+    if len(uploads) + len(cloudinary_refs) > 6:
+        raise HTTPException(
+            status_code=422,
+            detail="A maximum of 6 image views is supported.",
+        )
 
     if tier not in {"draft", "standard", "high"}:
         raise HTTPException(
@@ -29,19 +52,15 @@ async def generate_ai_3d(
             detail="tier must be draft, standard, or high.",
         )
 
-    if settings.public_base_url.startswith(("http://localhost", "http://127.0.0.1")):
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "AI 3D generation needs PUBLIC_BASE_URL to be a public deployment URL "
-                "so the external 3D engine can fetch reference images."
-            ),
-        )
-
     validated: list[tuple[bytes, str, str]] = []
-    for upload in files:
+
+    for upload in uploads:
         data, mime = await read_validated_image(upload, settings.max_upload_mb)
         validated.append((data, mime, upload.filename or "view"))
+
+    for index, url in enumerate(cloudinary_refs):
+        data, mime = await fetch_cloudinary_image(url, settings.max_upload_mb)
+        validated.append((data, mime, f"cloudinary-{index + 1}"))
 
     generation_prompt = description.strip()
     if analyze_image:
@@ -63,11 +82,23 @@ async def generate_ai_3d(
                     detail=f"Image analysis failed and no manual description was supplied: {exc}",
                 ) from exc
 
+    source_urls = list(cloudinary_refs)
+
+    if uploads:
+        if settings.public_base_url.startswith(("http://localhost", "http://127.0.0.1")):
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "Raw file AI-3D generation needs PUBLIC_BASE_URL to be public. "
+                    "Cloudinary URLs can be used directly without this requirement."
+                ),
+            )
+
+        uploaded_count = len(uploads)
+        for data, mime, _ in validated[:uploaded_count]:
+            source_urls.append(save_public_source_image(data, mime, settings))
+
     try:
-        source_urls = [
-            save_public_source_image(data, mime, settings)
-            for data, mime, _ in validated
-        ]
         threews = ThreeWSService(settings)
         submitted = await threews.submit(
             source_urls,
