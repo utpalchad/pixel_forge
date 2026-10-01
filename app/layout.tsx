@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Space_Grotesk, Syne } from "next/font/google";
 import "./globals.css";
 
@@ -21,5 +22,13 @@ export const metadata: Metadata={
 };
 
 export default function RootLayout({children}:{children:React.ReactNode}){
-  return <html lang="en"><body className={`${space.variable} ${syne.variable}`}>{children}</body></html>
+  return <html lang="en">
+    <body className={`${space.variable} ${syne.variable}`}>
+      {children}
+      <Script
+        src="https://upload-widget.cloudinary.com/latest/global/all.js"
+        strategy="afterInteractive"
+      />
+    </body>
+  </html>
 }
