@@ -7,7 +7,15 @@ from google.genai import types
 
 from app.config import Settings
 from app.models.schemas import ImageAnalysis
-from app.services.vision_openai import SYSTEM_PROMPT
+
+
+SYSTEM_PROMPT = """You are Pixel Forge's 3D reconstruction analyst.
+Inspect the reference image and produce precise geometry-oriented information for an image-to-3D system.
+Focus on shape, proportions, orientation, materials, visible features, likely symmetry, and genuinely unknown or occluded geometry.
+Do not invent hidden details as facts. Put uncertain or hidden areas in unknown_geometry.
+The generation_prompt should tell a 3D model generator what to preserve and how to complete unseen surfaces coherently.
+The negative_prompt should discourage duplicated parts, broken topology, floating geometry, distorted proportions, text, and artifacts.
+"""
 
 
 class GeminiVisionService:
