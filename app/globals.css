@@ -130,3 +130,39 @@ button:disabled{cursor:not-allowed;opacity:.58}
   border-color:rgba(255,212,0,.55);
   transform:translateY(-1px)
 }
+
+
+/* Cloudinary media layer */
+.cloudinaryUpload{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:10px;
+  padding:12px 14px;
+  border:1px solid rgba(87,230,255,.28);
+  background:linear-gradient(90deg,rgba(87,230,255,.12),rgba(124,60,255,.16));
+  color:#f6f6ff;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.11em;
+  cursor:pointer;
+  transition:transform .2s,border-color .2s,box-shadow .2s
+}
+.cloudinaryUpload:hover{
+  transform:translateY(-1px);
+  border-color:rgba(87,230,255,.62);
+  box-shadow:0 10px 28px rgba(87,230,255,.1)
+}
+.cloudinaryAsset{
+  display:block;
+  margin:-1px 0 10px;
+  padding:8px 10px;
+  border:1px solid rgba(255,212,0,.22);
+  color:var(--yellow);
+  font-size:8px;
+  text-align:center;
+  letter-spacing:.1em;
+  background:rgba(255,212,0,.04)
+}
