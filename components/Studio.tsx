@@ -131,7 +131,7 @@ export default function Studio(){
       setMessage(`${String(data?.provider||"AI").toUpperCase()} ANALYSIS READY`);
     }catch(error){
       setPipeline("error");
-      setMessage(error instanceof Error?error.message.toUpperCase().slice(0,36):"ANALYSIS ERROR");
+      setMessage(error instanceof Error?error.message.toUpperCase().slice(0,120):"ANALYSIS ERROR");
     }
   }
 
@@ -177,7 +177,7 @@ export default function Studio(){
       }
     }catch(error){
       setPipeline("error");
-      setMessage(error instanceof Error?error.message.toUpperCase().slice(0,36):"CONVERSION ERROR");
+      setMessage(error instanceof Error?error.message.toUpperCase().slice(0,120):"CONVERSION ERROR");
     }
   }
 
