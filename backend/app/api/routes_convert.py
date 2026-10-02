@@ -9,7 +9,9 @@ from app.services.image_processor import image_bytes_to_heightmap
 from app.services.mesh_engine import heightmap_to_mesh
 from app.utils.files import read_validated_image
 
-logger = logging.getLogger(__name__)\n\nrouter = APIRouter(prefix="/convert", tags=["conversion"])
+logger = logging.getLogger(__name__)
+
+router = APIRouter(prefix="/convert", tags=["conversion"])
 
 
 @router.post("/local", response_model=ConvertResponse)
@@ -68,6 +70,7 @@ async def convert_local(
             settings=settings,
         )
     except Exception as exc:
+        logger.exception("Mesh conversion failed")
         raise HTTPException(status_code=500, detail=f"Mesh conversion failed: {exc}") from exc
 
     return ConvertResponse(
