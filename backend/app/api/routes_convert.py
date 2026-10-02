@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 from app.config import get_settings
@@ -7,7 +9,7 @@ from app.services.image_processor import image_bytes_to_heightmap
 from app.services.mesh_engine import heightmap_to_mesh
 from app.utils.files import read_validated_image
 
-router = APIRouter(prefix="/convert", tags=["conversion"])
+logger = logging.getLogger(__name__)\n\nrouter = APIRouter(prefix="/convert", tags=["conversion"])
 
 
 @router.post("/local", response_model=ConvertResponse)
