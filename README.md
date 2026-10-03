@@ -1,175 +1,357 @@
-# Pixel Forge
+<div align="center">
 
-> Turn pixels into form.
+# ⚒️ PIXEL FORGE
 
-Pixel Forge is an image-to-3D creation platform that transforms ordinary JPG and PNG images into **STL**, **GLB**, and **3D-printable lithophane** outputs. It combines Cloudinary-powered media processing with a custom geometry pipeline and an interactive 3D experience so users can move from an image to a usable 3D asset without traditional CAD skills.
+### **Pixels become objects.**
 
-## ✨ What Pixel Forge Does
+Turn ordinary images into **3D-ready geometry, STL, GLB, reliefs, and lithophanes** through a media-first workflow powered by **Cloudinary**.
 
-Upload an image, choose how you want it interpreted, adjust the geometry, preview the result in 3D, and export it.
+[![Live Demo](https://img.shields.io/badge/LIVE_DEMO-Open_Pixel_Forge-ffd400?style=for-the-badge&labelColor=11111c)](https://forge-pixel-forge.onrender.com)
+[![HackIndia](https://img.shields.io/badge/HackIndia_2026-Pixels_to_Products-7c3cff?style=for-the-badge&labelColor=11111c)](https://hackindia.org/2026/pixels-to-products-cloudinary-ai-hackathon-2026)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_Pipeline-3448c5?style=for-the-badge&labelColor=11111c)](https://cloudinary.com/)
+[![License](https://img.shields.io/badge/License-MIT-57e6ff?style=for-the-badge&labelColor=11111c)](LICENSE)
 
-- **Image → STL** for 3D-printable reliefs and geometry
-- **Image → GLB** for portable 3D assets and web experiences
-- **Image → Lithophane** using image brightness to generate printable depth
-- **Interactive 3D preview** with rotation, zoom, lighting, and live visual feedback
-- **Custom controls** for depth, detail, smoothing, dimensions, base thickness, and inversion
-- **Optional natural-language guidance** so users can describe the result they want
-- **Cloudinary media pipeline** for upload, transformation, enhancement, optimization, and standardized reconstruction inputs
+**Hackathon Track:** PS-03 · **Your Media-Savvy Startup**
 
-## 🧠 How It Works
+</div>
 
-```text
-JPG / PNG
-    │
-    ▼
-Cloudinary Media Processing
-    │
-    ├── optimization
-    ├── resize / crop
-    ├── background processing
-    └── standardized input
-    │
-    ▼
-Pixel Forge Conversion Engine
-    │
-    ├── grayscale / depth mapping
-    ├── height generation
-    ├── mesh construction
-    ├── smoothing & optimization
-    └── scale / base / geometry processing
-    │
-    ▼
-Interactive 3D Preview
-    │
-    ├── STL
-    ├── GLB
-    └── Lithophane
+---
+
+## ✦ The idea
+
+**Images are flat. Ideas are not.**
+
+Creating a usable 3D asset usually means opening Blender or CAD software, learning a complex workflow, cleaning geometry, exporting formats, and repeating the process until the result behaves.
+
+Pixel Forge starts somewhere much simpler:
+
+> **Give it an image. Get something you can shape, inspect, export, and use.**
+
+A product photo can become a relief.  
+A portrait can become a lithophane.  
+A set of object views can become input for full 3D reconstruction.  
+Cloudinary prepares the media before the geometry pipeline ever touches it.
+
+Pixel Forge is designed to make the jump from **2D media → physical/digital form** feel less like a CAD assignment and more like a creative tool.
+
+---
+
+## ☁️ Why Cloudinary is core to Pixel Forge
+
+Cloudinary is not a decorative upload button in this project. It sits directly inside the product's media pipeline.
+
+When a user chooses the Cloudinary workflow, Pixel Forge can:
+
+| Stage | Cloudinary role |
+| --- | --- |
+| **Upload** | Cloudinary Upload Widget accepts local files, URLs, or camera input |
+| **Manage** | Uploaded assets are stored as Cloudinary media assets |
+| **Remove background** | `e_background_removal` prepares cleaner object silhouettes |
+| **Improve** | `e_improve` enhances the source before reconstruction |
+| **Restore** | `e_gen_restore` can restore degraded source imagery |
+| **Upscale** | `e_upscale` can increase usable image detail when supported |
+| **Optimize delivery** | `q_auto` and `f_auto` create efficient preview delivery |
+| **Feed 3D generation** | The transformed Cloudinary asset becomes input to Pixel Forge's geometry / 3D pipeline |
+
+That makes Cloudinary part of the **actual transformation journey**, not merely a place where an image happens to live.
+
+---
+
+## ⚡ The pipeline
+
+```mermaid
+flowchart LR
+    A["📷 Image / Multi-view Set"] --> B["☁️ Cloudinary Upload"]
+    B --> C["✨ Media Preparation"]
+    C --> C1["BG Removal"]
+    C --> C2["Improve"]
+    C --> C3["Restore"]
+    C --> C4["Upscale"]
+    C --> D["🧠 Pixel Forge Processing"]
+    D --> E1["Relief"]
+    D --> E2["Lithophane"]
+    D --> E3["Full 3D"]
+    E1 --> F["🧊 3D Preview"]
+    E2 --> F
+    E3 --> F
+    F --> G1["STL"]
+    F --> G2["GLB"]
 ```
 
-For relief and lithophane modes, Pixel Forge can construct geometry directly from image data. More advanced reconstruction modes can use AI-assisted depth or 3D generation while keeping the core workflow and post-processing inside Pixel Forge.
-
-## 🎨 Experience
-
-Pixel Forge is designed as a spatial, interactive creation experience rather than a conventional upload form.
-
-The interface is being built around:
-
-**Image → Depth → Wireframe → Mesh → Object**
-
-The goal is for users to actually *see* their image becoming geometry. The 3D model is the center of the interface, surrounded by lightweight controls for editing and export.
-
-## 🛠️ Planned Tech Stack
-
-### Frontend
-- Next.js / React
-- TypeScript
-- Tailwind CSS
-- Three.js
-- React Three Fiber
-- Drei
-- GSAP / motion-based interactions
-
-### Media
-- Cloudinary
-
-### Conversion & Geometry
-- Python
-- NumPy
-- Pillow / OpenCV
-- trimesh / Open3D
-- Custom image-to-height-map and mesh-generation logic
-
-### Backend
-- FastAPI
-
-## 🧩 Conversion Engine
-
-A simplified relief conversion follows this pipeline:
+### In one line
 
 ```text
-Image
-  ↓
-Resize & normalize
-  ↓
-Grayscale / depth map
-  ↓
+IMAGE → CLOUDINARY → CLEAN / ENHANCE / OPTIMIZE → GEOMETRY → PREVIEW → STL / GLB
+```
+
+---
+
+## ✨ What you can do
+
+### 01 · Upload with Cloudinary
+Use the Cloudinary Upload Widget for image ingestion and media management.
+
+### 02 · Prepare the image with AI media tools
+Toggle background removal, image improvement, restoration, or supported 4× upscaling before conversion.
+
+### 03 · Choose how the image becomes form
+Pixel Forge supports three creation paths:
+
+| Mode | Best for | Output |
+| --- | --- | --- |
+| **Relief** | Logos, artwork, plaques, surface geometry | STL / GLB |
+| **Lithophane** | Photos and light-based 3D prints | STL / GLB |
+| **Full 3D** | Object reconstruction from one or multiple views | Textured GLB + STL |
+
+### 04 · Tune the geometry
+Adjust **depth, detail, smoothing, resolution, model type, generation mode, and export format**.
+
+### 05 · Use multi-view reconstruction
+Enable **More Accurate 3D** and provide up to **6 views** of an object for a richer reconstruction input.
+
+### 06 · Export something useful
+Download **STL** for geometry/3D-print workflows or **GLB** for textured 3D and web experiences.
+
+---
+
+## 🎛️ Product experience
+
+Pixel Forge is intentionally built like a creative instrument rather than a plain upload form.
+
+The interface is organized around one visual idea:
+
+<div align="center">
+
+### **PIXELS → DEPTH → WIREFRAME → MESH → OBJECT**
+
+</div>
+
+The landing experience introduces the transformation visually, while the Studio keeps the tools close to the model: source media on the left, the object in the center, and geometry/export controls on the right.
+
+---
+
+## 🧪 Judge-friendly test flow
+
+Want to understand the project quickly? This is the shortest path:
+
+1. Open the **[live Pixel Forge demo](https://forge-pixel-forge.onrender.com)**.
+2. Scroll to **Studio**.
+3. Select **Upload with Cloudinary**.
+4. Upload a JPG/PNG/WebP image.
+5. Confirm the **Original Cloudinary Asset** appears.
+6. Toggle **BG Remove**, **Improve**, **Restore**, or **Upscale** where supported.
+7. Open **View Preprocessed Image** to see the Cloudinary-generated media result.
+8. Pick **Relief**, **Lithophane**, or **Full 3D**.
+9. Generate the model.
+10. Export **STL** or **GLB**.
+
+> For the clearest hackathon demo, use the Cloudinary upload path rather than the local-file fallback. It exposes the complete media → 3D workflow.
+
+---
+
+## 🧠 How the geometry side works
+
+For relief and lithophane generation, Pixel Forge converts image information into geometry rather than simply wrapping an image around a model.
+
+A simplified relief pipeline looks like this:
+
+```text
+Prepared image
+      ↓
+Resize + normalize
+      ↓
+Grayscale / intensity map
+      ↓
 Pixel intensity → height
-  ↓
-Generate vertices
-  ↓
-Connect vertices into faces
-  ↓
-Add walls + base
-  ↓
-Repair / smooth / simplify mesh
-  ↓
-Export STL / GLB
+      ↓
+Vertex grid
+      ↓
+Faces + walls + base
+      ↓
+Smooth / repair
+      ↓
+STL / GLB
 ```
 
-A basic height mapping can be represented as:
+A simplified height relationship is:
 
 ```text
 height = min_thickness + (brightness / 255) × depth
 ```
 
-Lithophane mode can invert this relationship so darker regions produce thicker geometry.
+Lithophane mode can invert the relationship so darker regions become thicker and transmit less light.
 
-## 🚀 Project Goals
+Full 3D mode follows a separate reconstruction workflow and can accept a single view or a multi-view image set.
 
-Pixel Forge aims to make basic 3D asset creation accessible to people who do not know Blender, CAD, mesh modeling, or traditional 3D workflows.
+---
 
-The project focuses on three ideas:
+## 🧰 Tech stack
 
-1. **Accessibility** — start with an ordinary image.
-2. **Interactivity** — preview and customize geometry visually.
-3. **Practical output** — export files that can be used on the web or prepared for 3D printing.
+| Layer | Technology |
+| --- | --- |
+| **Frontend** | Next.js, React, TypeScript |
+| **3D experience** | Three.js, React Three Fiber, Drei |
+| **Motion** | Motion, GSAP |
+| **Media pipeline** | **Cloudinary Upload Widget + Cloudinary transformations** |
+| **Backend API** | FastAPI |
+| **Geometry** | NumPy, Pillow, trimesh, SciPy |
+| **AI analysis** | Google Gemini integration |
+| **3D reconstruction integration** | External 3D reconstruction provider + Pixel Forge job pipeline |
+| **Deployment** | Render |
 
-## 🗺️ Roadmap
+---
 
-- [ ] Interactive landing experience
-- [ ] Drag-and-drop JPG/PNG upload
-- [ ] Cloudinary preprocessing pipeline
-- [ ] Custom relief conversion engine
-- [ ] Lithophane generator
-- [ ] STL export
-- [ ] GLB export
-- [ ] Three.js / React Three Fiber model viewer
-- [ ] Live depth and smoothing controls
-- [ ] Model dimensions and scaling
-- [ ] Mesh repair / optimization
-- [ ] Natural-language parameter input
-- [ ] Advanced AI-assisted 3D reconstruction
-- [ ] Responsive mobile experience
+## 🌿 Repository layout
 
-## 💻 Local Development
+Pixel Forge currently uses separate implementation branches so the frontend and conversion engine can evolve independently.
 
-The implementation is currently under active development. Once the application scaffold is committed, the typical development flow will be:
+| Branch | Contains |
+| --- | --- |
+| **`frontend/spatial-ui`** | Next.js UI, Studio, Three.js scenes, Cloudinary integration |
+| **`backend/conversion-engine`** | FastAPI API, conversion engine, jobs, exporters, AI/3D services |
+| **`main`** | Hackathon-facing project documentation |
+
+> **Reviewers:** the complete implementation is in the two public branches above.
+
+---
+
+## 🏃 Run it locally
+
+### Frontend
 
 ```bash
-git clone https://github.com/utpalchad/pixel_forge.git
-cd pixel_forge
+git clone https://github.com/utpalchad/pixel_forge.git pixel-forge-frontend
+cd pixel-forge-frontend
+git checkout frontend/spatial-ui
+
+cp .env.example .env.local
 npm install
 npm run dev
 ```
 
-Backend setup instructions and required environment variables will be documented as those modules are added.
+Configure `.env.local`:
 
-> Never commit API secrets or Cloudinary credentials directly to the repository. Use environment variables and keep local secret files out of version control.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_unsigned_upload_preset
+```
 
-## ☁️ Cloudinary
+For browser uploads, create an **unsigned Cloudinary upload preset** and use its name for `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`.
 
-Cloudinary is intended to be a core part of the Pixel Forge media workflow rather than only file storage. It prepares image assets before geometry generation and can provide optimized variants for previews and downstream processing.
+### Backend
 
-## 🏗️ Status
+In a second terminal / clone:
 
-**Pixel Forge is currently in active hackathon development.** Features described above include both the target product experience and components currently being implemented.
+```bash
+git clone https://github.com/utpalchad/pixel_forge.git pixel-forge-backend
+cd pixel-forge-backend
+git checkout backend/conversion-engine
+cd backend
 
-## 📄 License
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-This project is licensed under the **MIT License**. See the repository's `LICENSE` file for details.
+cp .env.example .env
+uvicorn app.main:app --reload --port 8000
+```
+
+On Windows PowerShell, activate the environment with:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Useful backend environment values:
+
+```env
+APP_NAME=Pixel Forge API
+APP_ENV=development
+PUBLIC_BASE_URL=http://localhost:8000
+CORS_ORIGINS=http://localhost:3000
+MAX_UPLOAD_MB=8
+OUTPUT_DIR=outputs
+
+# Optional AI analysis
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3.1-flash-lite
+
+# 3D provider configuration
+THREEWS_BASE_URL=https://three.ws
+THREEWS_DEFAULT_TIER=draft
+```
+
+> Never commit Cloudinary secrets, API secrets, or private credentials to the repository.
 
 ---
 
-### Pixel Forge
+## ✅ Implemented for the hackathon
+
+- [x] Interactive spatial landing experience
+- [x] Cloudinary Upload Widget
+- [x] Cloudinary asset workflow
+- [x] AI background removal
+- [x] Image improvement
+- [x] Generative restoration
+- [x] Supported image upscaling
+- [x] Optimized Cloudinary preview delivery
+- [x] Single-image workflow
+- [x] Up-to-6-image multi-view workflow
+- [x] Relief generation
+- [x] Lithophane generation
+- [x] STL export
+- [x] GLB export
+- [x] Full 3D generation workflow
+- [x] Fast / Standard generation modes
+- [x] Interactive Three.js experience
+- [x] Gemini-assisted image analysis / prompt enhancement
+- [x] Responsive Studio UI
+- [x] Live deployment
+
+---
+
+## 🏆 HackIndia · Pixels to Products 2026
+
+Pixel Forge is submitted for:
+
+### **PS-03 · Your Media-Savvy Startup**
+
+The track asks for a startup-style product where media is central to the user experience and Cloudinary performs meaningful work managing, transforming, optimizing, or delivering that media.
+
+That is the product loop Pixel Forge is built around:
+
+> **Cloudinary prepares the pixels. Pixel Forge turns them into form.**
+
+---
+
+## 🔭 Where Pixel Forge can go next
+
+The hackathon build focuses on proving the media-to-geometry workflow. Natural extensions include:
+
+- Saved projects and version history
+- Model comparison between source views
+- Automatic view-quality scoring
+- Richer texture reconstruction
+- Cloudinary metadata/tag-driven asset organization
+- Printability analysis and mesh diagnostics
+- Direct handoff to fabrication / 3D-print services
+- Collaborative project workspaces
+
+---
+
+## 📜 License
+
+Pixel Forge is released under the **MIT License**. See [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+
+### **PIXEL FORGE**
 
 **From image to geometry. From pixels to form.**
+
+[Live Demo](https://forge-pixel-forge.onrender.com) · [Frontend Branch](https://github.com/utpalchad/pixel_forge/tree/frontend/spatial-ui) · [Backend Branch](https://github.com/utpalchad/pixel_forge/tree/backend/conversion-engine)
+
+</div>
