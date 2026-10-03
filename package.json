@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node -e \"(async()=>{try{const c=process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,p=process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;const f=new FormData();const b=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Z8j8AAAAASUVORK5CYII=','base64');f.append('file',new Blob([b],{type:'image/png'}),'pixel-forge-cloudinary-smoke.png');f.append('upload_preset',p||'');f.append('folder','pixel-forge/diagnostics');f.append('tags','pixel-forge-diagnostic');const res=await fetch('https://api.cloudinary.com/v1_1/'+c+'/image/upload',{method:'POST',body:f});const j=await res.json();console.log('CLOUDINARY_UPLOAD_TEST',res.status,res.ok,j?.error?.message||j?.public_id||'ok');}catch(e){console.log('CLOUDINARY_UPLOAD_TEST_ERROR',e?.message||String(e));}})()\" && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
