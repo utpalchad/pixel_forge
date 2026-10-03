@@ -19,9 +19,12 @@ export default function MotionExperience(){
       return control;
     };
 
+    // Keep the navbar's CSS translateX(-50%) intact. Animating `y` on the
+    // same element makes Motion write its own transform and pushes the whole
+    // fixed pill to the right.
     remember(animate(
       ".nav",
-      {opacity:[0,1],y:[-16,0]},
+      {opacity:[0,1]},
       {duration:.58,ease}
     ));
     remember(animate(
