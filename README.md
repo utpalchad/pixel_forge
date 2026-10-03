@@ -203,15 +203,15 @@ Full 3D mode follows a separate reconstruction workflow and can accept a single 
 
 ## 🌿 Repository layout
 
-Pixel Forge currently uses separate implementation branches so the frontend and conversion engine can evolve independently.
+The **`main` branch contains the complete hackathon project** so reviewers can inspect the entire implementation from the default GitHub view.
 
-| Branch | Contains |
+| Path | Contains |
 | --- | --- |
-| **`frontend/spatial-ui`** | Next.js UI, Studio, Three.js scenes, Cloudinary integration |
-| **`backend/conversion-engine`** | FastAPI API, conversion engine, jobs, exporters, media analysis and 3D services |
-| **`main`** | Hackathon-facing project documentation |
+| **`app/` + `components/` + `lib/`** | Next.js UI, Studio, Three.js scenes, Motion interactions and Cloudinary integration |
+| **`backend/`** | FastAPI API, conversion engine, jobs, exporters, media analysis and 3D services |
+| **`.github/workflows/`** | Automated backend checks |
 
-> **Reviewers:** the complete implementation is in the two public branches above.
+> **Reviewers:** no branch switching is required. The full frontend and backend are available directly on `main`.
 
 ---
 
@@ -220,9 +220,8 @@ Pixel Forge currently uses separate implementation branches so the frontend and 
 ### Frontend
 
 ```bash
-git clone https://github.com/utpalchad/pixel_forge.git pixel-forge-frontend
-cd pixel-forge-frontend
-git checkout frontend/spatial-ui
+git clone https://github.com/utpalchad/pixel_forge.git
+cd pixel_forge
 
 cp .env.example .env.local
 npm install
@@ -241,13 +240,10 @@ For browser uploads, create an **unsigned Cloudinary upload preset** and use its
 
 ### Backend
 
-In a second terminal / clone:
+In a second terminal:
 
 ```bash
-git clone https://github.com/utpalchad/pixel_forge.git pixel-forge-backend
-cd pixel-forge-backend
-git checkout backend/conversion-engine
-cd backend
+cd pixel_forge/backend
 
 python -m venv .venv
 source .venv/bin/activate
@@ -352,6 +348,6 @@ Pixel Forge is released under the **MIT License**. See [LICENSE](LICENSE).
 
 **From image to geometry. From pixels to form.**
 
-[Live Demo](https://forge-pixel-forge.onrender.com) · [Frontend Branch](https://github.com/utpalchad/pixel_forge/tree/frontend/spatial-ui) · [Backend Branch](https://github.com/utpalchad/pixel_forge/tree/backend/conversion-engine)
+[Live Demo](https://forge-pixel-forge.onrender.com) · [Main Repository](https://github.com/utpalchad/pixel_forge) · [Backend](https://github.com/utpalchad/pixel_forge/tree/main/backend)
 
 </div>
