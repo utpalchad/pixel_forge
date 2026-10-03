@@ -91,7 +91,7 @@ IMAGE → CLOUDINARY → CLEAN / ENHANCE / OPTIMIZE → GEOMETRY → PREVIEW →
 ### 01 · Upload with Cloudinary
 Use the Cloudinary Upload Widget for image ingestion and media management.
 
-### 02 · Prepare the image with AI media tools
+### 02 · Prepare the image with Cloudinary media tools
 Toggle background removal, image improvement, restoration, or supported 4× upscaling before conversion.
 
 ### 03 · Choose how the image becomes form
@@ -195,7 +195,7 @@ Full 3D mode follows a separate reconstruction workflow and can accept a single 
 | **Media pipeline** | **Cloudinary Upload Widget + Cloudinary transformations** |
 | **Backend API** | FastAPI |
 | **Geometry** | NumPy, Pillow, trimesh, SciPy |
-| **AI analysis** | Google Gemini integration |
+| **Image analysis** | Google Gemini integration |
 | **3D reconstruction integration** | External 3D reconstruction provider + Pixel Forge job pipeline |
 | **Deployment** | Render |
 
@@ -208,7 +208,7 @@ Pixel Forge currently uses separate implementation branches so the frontend and 
 | Branch | Contains |
 | --- | --- |
 | **`frontend/spatial-ui`** | Next.js UI, Studio, Three.js scenes, Cloudinary integration |
-| **`backend/conversion-engine`** | FastAPI API, conversion engine, jobs, exporters, AI/3D services |
+| **`backend/conversion-engine`** | FastAPI API, conversion engine, jobs, exporters, media analysis and 3D services |
 | **`main`** | Hackathon-facing project documentation |
 
 > **Reviewers:** the complete implementation is in the two public branches above.
@@ -273,7 +273,7 @@ CORS_ORIGINS=http://localhost:3000
 MAX_UPLOAD_MB=8
 OUTPUT_DIR=outputs
 
-# Optional AI analysis
+# Optional image analysis
 GEMINI_API_KEY=
 GEMINI_MODEL=gemini-3.1-flash-lite
 
@@ -291,7 +291,7 @@ THREEWS_DEFAULT_TIER=draft
 - [x] Interactive spatial landing experience
 - [x] Cloudinary Upload Widget
 - [x] Cloudinary asset workflow
-- [x] AI background removal
+- [x] Cloudinary background removal
 - [x] Image improvement
 - [x] Generative restoration
 - [x] Supported image upscaling
@@ -305,7 +305,7 @@ THREEWS_DEFAULT_TIER=draft
 - [x] Full 3D generation workflow
 - [x] Fast / Standard generation modes
 - [x] Interactive Three.js experience
-- [x] Gemini-assisted image analysis / prompt enhancement
+- [x] Gemini image analysis / prompt enhancement
 - [x] Responsive Studio UI
 - [x] Live deployment
 
