@@ -1092,3 +1092,63 @@ body{
   opacity:1;
   background:rgba(255,255,255,.07)
 }
+
+
+/* Navbar alignment fix: keep the menu truly centered and prevent GitHub from clipping. */
+.nav{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr);
+  column-gap:18px;
+  overflow:visible
+}
+.nav .brand{
+  justify-self:start;
+  min-width:0
+}
+.nav nav{
+  justify-self:center;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  max-width:100%
+}
+.nav nav a,
+.nav .signInButton{
+  flex:0 0 auto
+}
+.navCta{
+  justify-self:end;
+  flex:0 0 auto;
+  white-space:nowrap
+}
+
+/* Give the center menu a little more breathing room on laptop/tablet widths. */
+@media(min-width:1001px) and (max-width:1220px){
+  .nav{
+    width:calc(100% - 20px);
+    padding-left:14px;
+    padding-right:10px;
+    grid-template-columns:minmax(150px,1fr) auto minmax(150px,1fr);
+    column-gap:10px
+  }
+  .nav nav{
+    gap:4px
+  }
+  .nav nav a,
+  .nav .signInButton{
+    padding-left:9px;
+    padding-right:9px
+  }
+  .navCta{
+    padding-left:12px;
+    gap:8px
+  }
+}
+
+/* On tighter desktop widths, keep GitHub visible before the non-functional sign-in control. */
+@media(min-width:1001px) and (max-width:1080px){
+  .nav .signInButton{
+    display:none
+  }
+}
