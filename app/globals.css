@@ -1152,3 +1152,13 @@ body{
     display:none
   }
 }
+
+
+/* Robust centering: do not depend on transform, so animation libraries cannot shift the pill. */
+.nav{
+  left:0!important;
+  right:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  transform:none!important;
+}
